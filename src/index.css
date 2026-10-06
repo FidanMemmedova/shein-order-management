@@ -1,9 +1,10 @@
 :root {
+  --page-bg: #f6f6f7;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #1f2937;
-  background-color: #f5f7fa;
+  color: #18181b;
+  background-color: var(--page-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -17,7 +18,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: inherit;
+  background-color: var(--page-bg);
 }
 
 #root {
@@ -30,19 +31,82 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: underline;
+/* Brend nişanı (başlıq və giriş ekranı) */
+.brand__mark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #18181b;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
+/* Səhifə başlığı */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-button {
-  font-family: inherit;
+.page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-header p {
+  margin: 4px 0 0;
+  color: #71717a;
+  font-size: 14px;
+}
+
+.page-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-title__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.page--narrow {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.surface-card {
+  border-color: #e4e4e7;
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04);
+}
+
+.status-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  min-height: 32px;
+  align-items: center;
+}
+
+/* iPhone: 16px-dən kiçik sahələrə toxunanda Safari ekranı böyüdür. */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  .ant-select-selection-item,
+  .ant-select-selection-placeholder,
+  .ant-select-selection-search-input {
+    font-size: 16px !important;
+  }
 }

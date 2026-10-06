@@ -1,0 +1,13 @@
+# Dependencies
+node_modules
+
+# Local environment (Supabase açarları)
+.env
+.env.local
+.env.*.local
+
+# Logs & editor
+*.log
+.DS_Store
+.vscode
+.idea

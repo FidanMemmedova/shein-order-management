@@ -1,73 +1,80 @@
-# Shein Order Management
+# Fidan Business Management
 
-Vite + React + TypeScript əsasında hazırlanmış bu layihə Shein sifarişlərini izləmək, idarə etmək və müşahidə etmək üçün sadə idarəetmə paneli təqdim edir. Cədvəl görünüşü MockAPI xidmətindən çəkilən məlumatları göstərir, filtr və axtarış funksiyaları ilə rahat analiz imkanı yaradır. Form səhifəsi isə yeni sifarişlərin əlavə edilməsini təmin edir.
+**Shein** və **iHerb** sifarişlərini bir yerdə izləmək və idarə etmək üçün panel: Vite, React, TypeScript, Ant Design. Məlumatlar **Supabase** (PostgreSQL) bazasında saxlanılır, sifariş sayına limit yoxdur.
 
 ## Əsas xüsusiyyətlər
 
-- **Sifariş cədvəli:** Sifariş tarixi, sahibi, alıcının e-maili, sifariş edilən şəxs, *Sifarişin qiyməti*, təhvil və qaytarılma statusları, eləcə də *Müştəri məlumatı* sütunlarını göstərir.
-- **Status idarəsi:** “Təhvil alındı” və “Qaytarılma” checkbox-ları dəyişdirilməzdən əvvəl təsdiqləmə dialoqu açır və nəticə MockAPI-yə yazılır.
-- **Müştəri qeydləri:** Cədvəldə ikinci sondan olan sütun müştəri barədə əlavə qeydləri göstərir; eyni sahə redaktə modalında və sifariş formunda dəyişdirilə bilər.
-- **Axtarış və filtr:** Sifariş edilən şəxsə görə axtarış, sahibinə görə filtr və tarixə görə sortlama dəstəklənir.
-- **Sifariş formu:** Yeni sifariş əlavə edərkən tarix, sahib, email, sifariş edilən şəxs, qiymət, müştəri məlumatı kimi sahələr daxil edilir. Göndəriş uğurlu olduqda modal bildiriş göstərilir.
-- **Responsiv dizayn:** Cədvəl və səhifə layout-u geniş ekranlarda tam enə açılır, mobil ekranlarda isə uyğunlaşır.
+- **Mağazalar:** başlıqdakı «Shein | iHerb» seçimi ilə bölmələr arasında keçid edilir. Hər mağazanın öz cədvəli, statistikası və forması var. Shein qiymətləri dollarla ($), iHerb qiymətləri manatla (₼) göstərilir. Sonuncu açılan mağaza yadda qalır.
+- **Giriş:** panelə yalnız Supabase-də yaradılmış istifadəçi daxil ola bilər, müştəri məlumatları açıq qalmır.
+- **Yeni sifariş formu:** mağaza, tarix, e-mail, sifariş edilən şəxs, qiymət və müştəri qeydləri. E-mail və adlar həmin mağazanın əvvəlki sifarişlərindən avtomatik təklif olunur.
+- **Müştəri qeydləri:** «Müştəri əlavə et» (+) düyməsi ilə hər müştəri üçün ayrıca qutu açılır (məs. bir bağlamada 4 müştəri = 4 qutu). Qutular həm formda, həm də birbaşa cədvəldə redaktə olunur və cədvəldə avtomatik yadda saxlanılır.
+- **Kargo:** cədvəldəki «Kargo» sütununda hər sifariş üçün sonradan Aramex və ya Cargomax seçilir.
+- **Statuslar:** «Təhvil alındı» və «Qaytarılma» checkbox-larını dəyişməzdən əvvəl yanlarında qısa təsdiq soruşulur. Qaytarılan sifarişlər cədvəlin sonunda göstərilir.
+- **Filtrlər:** «Hamısı / Gözləyir / Təhvil alınıb / Qaytarılma / Kargo seçilməyib» tabları (saylarla birlikdə), axtarış (ə/e, ş/s kimi fərqlərə həssas deyil), tarix aralığı («Bu ay», «Keçən ay» və s.) və kargo filtri. Seçilmiş sifarişlərin sayı və cəmi məbləği dərhal görünür.
+- **Excel:** görünən sifarişlər bir kliklə CSV faylı kimi yüklənir və Excel-də açılır.
+- **Redaktə:** sifarişin bütün sahələri, o cümlədən mağazası dəyişdirilə bilər (səhv bölməyə düşən sifarişi o biri mağazaya keçirmək olur).
+- **Telefon:** kiçik ekranlarda cədvəl əvəzinə hər sifariş ayrıca kartda göstərilir.
 
-## Quraşdırma və işə salınma
+## Ünvanlar
+
+- `/shein`, `/iherb`: sifarişlər
+- `/shein/new`, `/iherb/new`: yeni sifariş
+- `/` sonuncu açılan mağazaya, köhnə `/table` ünvanı isə `/shein`-ə yönləndirir.
+
+## Quraşdırma
 
 ```bash
-git clone <repo-url>
-cd SheinOrderManagement-main
 npm install
+cp .env.example .env   # sonra dəyərləri doldurun
+npm run dev
 ```
 
-- **İnkişaf serveri:** `npm run dev`
-- **Lint yoxlaması:** `npm run lint`
-- **Prodaksiya build-i:** `npm run build`  
-  Build əmri həm TypeScript layihəsini `tsc -b` ilə tərtib edir, həm də Vite vasitəsilə `dist/` qovluğunu yaradır.
-- **Prodaksiya öncəsi baxış:** `npm run preview`
+### Supabase (bir dəfəlik)
 
-> **Qeyd:** Layihə `node >= 18` versiyası ilə test edilib. `npm` 9+ versiyasından istifadə tövsiyə olunur.
+1. [supabase.com](https://supabase.com)-da yeni layihə yaradın.
+2. **SQL Editor → New query** bölməsində [`supabase/schema.sql`](supabase/schema.sql) faylını yapışdırıb **Run** edin.
+3. **Authentication → Users → Add user → Create new user**: e-mail və parolunuzu yazın, «Auto Confirm User» seçin.
+4. **Authentication → Sign In / Providers** bölməsində «Allow new users to sign up» seçimini söndürün. Belə olduqda başqası özünə hesab aça bilməz.
+5. **Project Settings → API** bölməsindən Project URL və publishable (anon) açarı götürüb `.env` faylına yazın:
+   ```
+   VITE_SUPABASE_URL=...
+   VITE_SUPABASE_ANON_KEY=...
+   ```
+6. Vercel-də eyni iki dəyişəni **Settings → Environment Variables** bölməsinə əlavə edib layihəni yenidən deploy edin.
 
-## MockAPI haqqında
+### Köhnə MockAPI sifarişlərinin köçürülməsi
 
-- Sifarişlər `https://67faa1b08ee14a54262839ee.mockapi.io/orders` son nöqtəsindən, sifariş sahibləri isə `https://67faa1b08ee14a54262839ee.mockapi.io/orderOwners` son nöqtəsindən alınır.
-- Sifariş obyektlərinin əhəmiyyətli sahələri:
-  - `orderDate` (ISO tarix sətiri)
-  - `orderOwner`, `orderEmail`, `orderForName`
-  - `orderPrice` (rəqəm)
-  - `returnRequest` (boolean)
-  - `deliveryReceived` (boolean, defolt `false`)
-  - `customerInfo` (string, defolt boş)
-- Müəyyən tarixə qədər olan sifarişləri toplu silmək lazımdırsa, MockAPI-lərin REST imkanlarından (GET + DELETE) istifadə oluna bilər. Layihə daxilində bu əməliyyat üçün ayrıca skript yoxdur.
+Shein bölməsi boş olanda **«Köhnə sifarişləri köçür»** düyməsi görünür. Bu düymə MockAPI-dəki bütün sifarişləri yeni bazaya Shein sifarişləri kimi köçürür:
 
-## Layihə strukturu (seçilmiş fayllar)
+- köhnə «Müştəri məlumatı» mətnindəki hər sətir ayrıca qutuya çevrilir;
+- sahibi Fidan olmayan sifarişlərdə sahibin adı ilk qutuya yazılır;
+- düyməni təkrar bassanız, artıq köçürülmüş sifarişlər ikinci dəfə əlavə olunmur.
+
+## Əmrlər
+
+- `npm run dev`: inkişaf serveri
+- `npm run build`: TypeScript yoxlaması və prodaksiya build-i
+- `npm run lint`: ESLint
+- `npm run preview`: build-ə baxış
+
+## Layihə strukturu
 
 ```
+supabase/schema.sql              – baza cədvəli və təhlükəsizlik qaydaları
 src/
+├─ api/orders.ts                 – Supabase CRUD əməliyyatları
+├─ api/legacyImport.ts           – MockAPI-dən birdəfəlik köçürmə
 ├─ components/
-│  ├─ Form/Form.tsx         – Sifariş əlavə etmək üçün forma
-│  └─ Table/MyTable.tsx     – Əsas sifariş cədvəli
-│     └─ MyTable.css        – Cədvəl üçün stil düzəlişləri
-├─ pages/
-│  ├─ FormPage.tsx          – Forma səhifəsi (naviqasiya düyməsi ilə)
-│  └─ TablePage.tsx         – Cədvəl səhifəsi, konteyner stili `TablePage.css`
-├─ App.tsx                  – Router ( / və /table marşrutları )
-├─ index.css                – Ümumi qlobal stillər
-└─ main.tsx                 – React giriş nöqtəsi
+│  ├─ AppLayout/                 – başlıq, naviqasiya, çıxış
+│  ├─ AuthGate/                  – giriş ekranı
+│  ├─ CargoSelect/               – Aramex / Cargomax seçimi
+│  ├─ NotesEditor/               – «+» ilə çoxlu müştəri qutuları
+│  ├─ OrderForm/                 – forma sahələri və redaktə pəncərəsi
+│  ├─ OrdersTable/               – cədvəl, telefon kartları, status təsdiqi
+│  ├─ StatCard/                  – statistika kartları
+│  ├─ StoreRoute/, StoreSwitch/  – mağaza ünvanları və Shein/iHerb seçimi
+├─ lib/                          – Supabase, formatlama, filtrlər, CSV ixracı
+├─ pages/FormPage.tsx            – yeni sifariş (/:store/new)
+├─ pages/TablePage.tsx           – sifarişlər (/:store)
+└─ types/order.ts                – Order tipi, mağazalar, valyuta, kargo seçimləri
 ```
-
-## İstifadəçi ssenarisi
-
-1. **Sifariş əlavə et:** Ana səhifədəki formu doldurun və “Göndər” düyməsini sıxın. Uğurlu əməliyyatdan sonra forma təmizlənəcək.
-2. **Sifarişləri görüntülə:** “Sifarişlərə keç” düyməsi ilə cədvələ yönləndirin. Sütun başlıqlarından sort və filter tətbiq edin, müştəri qeydlərini ikinci sondan sütunda oxuyun.
-3. **Statusu yenilə:** Sətirdəki checkbox-ları işarələdikdə təsdiqləmə pəncərəsi çıxacaq; təsdiq etdikdən sonra MockAPI yenilənir.
-4. **Sifarişi redaktə et / sil:** “Redaktə et” düyməsi modalı açır, dəyişiklikləri yadda saxlayın və ya “Sil” düyməsilə sifarişi tam silin.
-
-## Fərdiləşdirmə məsləhətləri
-
-- MockAPI limitlərinə görə çoxlu sayda müraciət edərkən sıx vaxtlı ardıcıl sorğulardan çəkinin.
-- Cədvəl ölçülü olduqda, daxili horizontal scroll öz konteynerində aktivləşir və səhifə səviyyəsində scroll yaranmır.
-- Əlavə sütunlar və ya yeni form sahələri tələb olunarsa, `Data` interfeysini və MockAPI-yə göndərilən obyektləri uyğun olaraq genişləndirin.
-
----
-
-Layihə ilə bağlı suallarınız yaranarsa, kodun müvafiq hissəsindəki şərhlərə və ya bu sənədə qayıda bilərsiniz. Uğurlar! 

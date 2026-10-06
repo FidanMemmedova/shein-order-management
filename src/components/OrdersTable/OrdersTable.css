@@ -1,0 +1,79 @@
+.orders-table .ant-table {
+  border-radius: 12px;
+}
+
+.orders-table .ant-table-thead > tr > th {
+  background: #fafafa;
+  color: #52525b;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.orders-table .ant-table-tbody > tr > td {
+  vertical-align: top;
+}
+
+.orders-table .ant-table-tbody .ant-checkbox-wrapper {
+  margin-top: 6px;
+}
+
+.orders-table__row--returned > td {
+  background: #fafafa;
+}
+
+.orders-table__row--returned .cell-customer__name,
+.orders-table__row--returned .cell-price,
+.orders-table__row--returned .cell-date {
+  color: #a1a1aa;
+}
+
+.cell-date {
+  display: inline-block;
+  padding-top: 5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cell-customer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cell-customer__name {
+  font-weight: 600;
+  color: #18181b;
+}
+
+.cell-customer__email {
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.cell-price {
+  display: inline-block;
+  padding-top: 5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.orders-table .ant-pagination {
+  padding: 0 16px;
+}
+
+.profit-input {
+  width: 100%;
+}
+
+.profit-input--gain .ant-input-number-input {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.profit-input--loss .ant-input-number-input {
+  color: #b91c1c;
+  font-weight: 600;
+}
