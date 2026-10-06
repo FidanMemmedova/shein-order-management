@@ -4,6 +4,7 @@ import AuthGate from "./components/AuthGate/AuthGate";
 import AppLayout from "./components/AppLayout/AppLayout";
 import StoreRoute from "./components/StoreRoute/StoreRoute";
 import FormPage from "./pages/FormPage";
+import LimitsPage from "./pages/LimitsPage";
 import TablePage from "./pages/TablePage";
 import { getLastStore } from "./lib/store";
 
@@ -20,6 +21,7 @@ const App: React.FC = () => (
             path="/:store/new"
             element={<StoreRoute>{(store) => <FormPage store={store} />}</StoreRoute>}
           />
+          <Route path="/limits" element={<LimitsPage />} />
           {/* Köhnə ünvan: /table əvvəllər Shein cədvəli idi */}
           <Route path="/table" element={<Navigate to="/shein" replace />} />
           <Route path="*" element={<Navigate to={`/${getLastStore()}`} replace />} />

@@ -53,13 +53,13 @@ export const toRow = (order: Partial<OrderInput>) => {
 export const cleanNotes = (notes: string[]) =>
   notes.map((note) => note.trim()).filter(Boolean);
 
-export async function fetchOrders(store: Store): Promise<Order[]> {
+/** Mağaza verilməsə, hər iki mağazanın sifarişlərini qaytarır (limitlər üçün). */
+export async function fetchOrders(store?: Store): Promise<Order[]> {
   const orders: Order[] = [];
   for (let from = 0; ; from += PAGE_SIZE) {
-    const { data, error } = await supabase
-      .from("orders")
-      .select(COLUMNS)
-      .eq("store", store)
+    let query = supabase.from("orders").select(COLUMNS);
+    if (store) query = query.eq("store", store);
+    const { data, error } = await query
       .order("order_date", { ascending: false })
       .order("id", { ascending: false })
       .range(from, from + PAGE_SIZE - 1);
@@ -94,20 +94,4 @@ export async function updateOrder(id: number, patch: Partial<OrderInput>): Promi
 export async function deleteOrder(id: number): Promise<void> {
   const { error } = await supabase.from("orders").delete().eq("id", id);
   if (error) throw error;
-}
-
-/** Forma üçün həmin mağazada əvvəllər istifadə olunmuş e-mail və adlar (avtomatik tamamlama). */
-export async function fetchSuggestions(store: Store): Promise<{ emails: string[]; names: string[] }> {
-  const { data, error } = await supabase
-    .from("orders")
-    .select("order_email, order_for_name")
-    .eq("store", store)
-    .order("id", { ascending: false })
-    .limit(1000);
-  if (error) throw error;
-  const rows = data as { order_email: string; order_for_name: string }[];
-  return {
-    emails: [...new Set(rows.map((row) => row.order_email))],
-    names: [...new Set(rows.map((row) => row.order_for_name))],
-  };
 }

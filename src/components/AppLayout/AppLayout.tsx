@@ -1,7 +1,12 @@
 import React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Avatar, Button, Dropdown, Layout, Menu } from "antd";
-import { LogoutOutlined, PlusCircleOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  PieChartOutlined,
+  PlusCircleOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
 import { supabase } from "../../lib/supabase";
 import { useSession } from "../../lib/auth";
 import { getLastStore, storeFromPath } from "../../lib/store";
@@ -16,7 +21,9 @@ const AppLayout: React.FC = () => {
 
   const store = storeFromPath(location.pathname) ?? getLastStore();
   const isFormPage = location.pathname.endsWith("/new");
+  const isLimitsPage = location.pathname === "/limits";
   const pageSuffix = isFormPage ? "/new" : "";
+  const selectedKey = isLimitsPage ? "limits" : isFormPage ? "new" : "orders";
 
   return (
     <Layout className="app-layout">
@@ -34,12 +41,15 @@ const AppLayout: React.FC = () => {
           <Menu
             mode="horizontal"
             className="app-nav"
-            selectedKeys={[isFormPage ? "new" : "orders"]}
+            selectedKeys={[selectedKey]}
             items={[
               { key: "orders", icon: <UnorderedListOutlined />, label: "Sifarişlər" },
               { key: "new", icon: <PlusCircleOutlined />, label: "Yeni sifariş" },
+              { key: "limits", icon: <PieChartOutlined />, label: "Limitlər" },
             ]}
-            onClick={({ key }) => navigate(key === "new" ? `/${store}/new` : `/${store}`)}
+            onClick={({ key }) =>
+              navigate(key === "limits" ? "/limits" : key === "new" ? `/${store}/new` : `/${store}`)
+            }
           />
 
           <Dropdown

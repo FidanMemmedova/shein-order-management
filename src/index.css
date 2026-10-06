@@ -110,3 +110,11 @@ a {
     font-size: 16px !important;
   }
 }
+
+.limit-hint {
+  margin: -8px 0 20px;
+}
+
+.limit-hint .ant-progress {
+  margin: 2px 0 4px;
+}

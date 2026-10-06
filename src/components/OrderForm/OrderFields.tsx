@@ -10,6 +10,8 @@ interface OrderFieldsProps {
   names?: string[];
   /** Qeydlərdən əvvəl göstəriləcək əlavə sahələr (məs. redaktədə kargo və statuslar). */
   extra?: React.ReactNode;
+  /** Ad sahəsinin altında (məs. aylıq $300 limiti). */
+  nameHint?: React.ReactNode;
 }
 
 const toOptions = (values: string[]) => values.map((value) => ({ value }));
@@ -17,7 +19,7 @@ const toOptions = (values: string[]) => values.map((value) => ({ value }));
 const matches = (input: string, option?: { value: string }) =>
   normalizeText(option?.value ?? "").includes(normalizeText(input));
 
-const OrderFields: React.FC<OrderFieldsProps> = ({ store, emails = [], names = [], extra }) => (
+const OrderFields: React.FC<OrderFieldsProps> = ({ store, emails = [], names = [], extra, nameHint }) => (
   <>
     <Row gutter={16}>
       <Col xs={24} sm={12}>
@@ -69,6 +71,8 @@ const OrderFields: React.FC<OrderFieldsProps> = ({ store, emails = [], names = [
     >
       <AutoComplete options={toOptions(names)} filterOption={matches} placeholder="Ad və soyad" />
     </Form.Item>
+
+    {nameHint}
 
     {extra}
 

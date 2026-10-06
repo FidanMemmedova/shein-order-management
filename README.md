@@ -7,12 +7,13 @@ Canlı sayt: **https://fidan-business-management.vercel.app** (köhnə `shein-or
 ## Əsas xüsusiyyətlər
 
 - **Mağazalar:** başlıqdakı «Shein | iHerb» seçimi ilə bölmələr arasında keçid edilir. Hər mağazanın öz cədvəli, statistikası və forması var. Shein qiymətləri dollarla ($), iHerb qiymətləri manatla (₼) göstərilir. Sonuncu açılan mağaza yadda qalır.
-- **Giriş:** panelə yalnız Supabase-də yaradılmış istifadəçi daxil ola bilər, müştəri məlumatları açıq qalmır.
+- **Giriş və ayrı panellər:** panelə yalnız Supabase-də yaradılmış istifadəçilər daxil ola bilər; hər istifadəçi yalnız öz sifarişlərini görür.
 - **Yeni sifariş formu:** mağaza, tarix, e-mail, sifariş edilən şəxs, qiymət və müştəri qeydləri. E-mail və adlar həmin mağazanın əvvəlki sifarişlərindən avtomatik təklif olunur.
 - **Müştəri qeydləri:** «Müştəri əlavə et» (+) düyməsi ilə hər müştəri üçün ayrıca qutu açılır (məs. bir bağlamada 4 müştəri = 4 qutu). Qutular həm formda, həm də birbaşa cədvəldə redaktə olunur və cədvəldə avtomatik yadda saxlanılır.
 - **Kargo:** cədvəldəki «Kargo» sütununda hər sifariş üçün sonradan Aramex və ya Cargomax seçilir.
 - **Statuslar:** «Təhvil alındı» və «Qaytarılma» checkbox-larını dəyişməzdən əvvəl yanlarında qısa təsdiq soruşulur. Qaytarılan sifarişlər cədvəlin sonunda göstərilir.
 - **Filtrlər:** «Hamısı / Gözləyir / Təhvil alınıb / Qaytarılma / Kargo seçilməyib» tabları (saylarla birlikdə), axtarış (ə/e, ş/s kimi fərqlərə həssas deyil), tarix aralığı («Bu ay», «Keçən ay» və s.) və kargo filtri. Seçilmiş sifarişlərin sayı və cəmi məbləği dərhal görünür.
+- **Aylıq limitlər ($300):** «Limitlər» səhifəsində hər sifariş edilən şəxs üçün Smart Customs üslubunda dairəvi qrafik: istifadə olunan və qalıq limit. Ən çox boş yeri olan əvvəldə, ada görə axtarış var. Hesab sifariş tarixinə görə aparılır və hər ayın 1-də sıfırlanır. Shein və iHerb birlikdə sayılır (iHerb ₼ → $ 1.70 ilə). Yeni sifariş formunda adı yazanda həmin şəxsin bu ayki limiti və sifarişin limiti aşıb-aşmadığı göstərilir.
 - **Excel:** görünən sifarişlər bir kliklə CSV faylı kimi yüklənir və Excel-də açılır.
 - **Redaktə:** sifarişin bütün sahələri, o cümlədən mağazası dəyişdirilə bilər (səhv bölməyə düşən sifarişi o biri mağazaya keçirmək olur).
 - **Telefon:** kiçik ekranlarda cədvəl əvəzinə hər sifariş ayrıca kartda göstərilir.
@@ -21,6 +22,7 @@ Canlı sayt: **https://fidan-business-management.vercel.app** (köhnə `shein-or
 
 - `/shein`, `/iherb`: sifarişlər
 - `/shein/new`, `/iherb/new`: yeni sifariş
+- `/limits`: aylıq $300 limitləri (hər iki mağaza birlikdə)
 - `/` sonuncu açılan mağazaya, köhnə `/table` ünvanı isə `/shein`-ə yönləndirir.
 
 ## Quraşdırma
@@ -44,13 +46,11 @@ npm run dev
    ```
 6. Vercel-də eyni iki dəyişəni **Settings → Environment Variables** bölməsinə əlavə edib layihəni yenidən deploy edin.
 
-### Köhnə MockAPI sifarişlərinin köçürülməsi
+### İstifadəçilər
 
-Shein bölməsi boş olanda **«Köhnə sifarişləri köçür»** düyməsi görünür. Bu düymə MockAPI-dəki bütün sifarişləri yeni bazaya Shein sifarişləri kimi köçürür:
+Hər istifadəçinin öz paneli var: sifarişlər, statistika və qazanc yalnız həmin hesaba görünür (Supabase RLS: `user_id = auth.uid()`). Yeni istifadəçi **Authentication → Users → Add user → Create new user** ilə yaradılır («Auto Confirm User» seçili).
 
-- köhnə «Müştəri məlumatı» mətnindəki hər sətir ayrıca qutuya çevrilir;
-- sahibi Fidan olmayan sifarişlərdə sahibin adı ilk qutuya yazılır;
-- düyməni təkrar bassanız, artıq köçürülmüş sifarişlər ikinci dəfə əlavə olunmur.
+Köhnə MockAPI sifarişləri 06.10.2026-da Fidanın hesabına köçürülüb.
 
 ## Əmrlər
 
@@ -65,7 +65,6 @@ Shein bölməsi boş olanda **«Köhnə sifarişləri köçür»** düyməsi gö
 supabase/schema.sql              – baza cədvəli və təhlükəsizlik qaydaları
 src/
 ├─ api/orders.ts                 – Supabase CRUD əməliyyatları
-├─ api/legacyImport.ts           – MockAPI-dən birdəfəlik köçürmə
 ├─ components/
 │  ├─ AppLayout/                 – başlıq, naviqasiya, çıxış
 │  ├─ AuthGate/                  – giriş ekranı

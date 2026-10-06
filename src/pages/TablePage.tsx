@@ -13,12 +13,10 @@ import {
   Result,
   Segmented,
   Select,
-  Space,
   Tooltip,
 } from "antd";
 import {
   CheckCircleOutlined,
-  CloudDownloadOutlined,
   DollarOutlined,
   DownloadOutlined,
   FilterOutlined,
@@ -31,7 +29,6 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { deleteOrder, fetchOrders, updateOrder } from "../api/orders";
-import { importFromMockApi } from "../api/legacyImport";
 import EditOrderModal from "../components/OrderForm/EditOrderModal";
 import OrdersTable from "../components/OrdersTable/OrdersTable";
 import OrderCards from "../components/OrdersTable/OrderCards";
@@ -96,7 +93,7 @@ interface TablePageProps {
 }
 
 const TablePage: React.FC<TablePageProps> = ({ store }) => {
-  const { message, modal } = App.useApp();
+  const { message } = App.useApp();
   const navigate = useNavigate();
   const screens = Grid.useBreakpoint();
   const isDesktop = screens.md ?? true;
@@ -167,26 +164,6 @@ const TablePage: React.FC<TablePageProps> = ({ store }) => {
     }
   };
 
-  const handleImport = () => {
-    modal.confirm({
-      title: "Köhnə sifarişlər köçürülsün?",
-      content:
-        "MockAPI-dəki bütün sifarişlər yeni bazaya əlavə olunacaq. Artıq köçürülmüş sifarişlər təkrar əlavə edilmir.",
-      okText: "Köçür",
-      cancelText: "Ləğv et",
-      onOk: async () => {
-        try {
-          const count = await importFromMockApi();
-          message.success(`${count} sifariş köçürüldü.`);
-          await loadOrders();
-        } catch (error) {
-          console.error("Köçürmə xətası:", error);
-          message.error("Köçürmə alınmadı. Yenidən cəhd edin.");
-        }
-      },
-    });
-  };
-
   const stats = useMemo(
     () => ({
       count: orders.length,
@@ -251,16 +228,9 @@ const TablePage: React.FC<TablePageProps> = ({ store }) => {
     </Empty>
   ) : (
     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={`Hələ ${STORE_LABELS[store]} sifarişi yoxdur`}>
-      <Space wrap>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(`/${store}/new`)}>
-          Yeni sifariş
-        </Button>
-        {store === "shein" && (
-          <Button icon={<CloudDownloadOutlined />} onClick={handleImport}>
-            Köhnə sifarişləri köçür
-          </Button>
-        )}
-      </Space>
+      <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(`/${store}/new`)}>
+        Yeni sifariş
+      </Button>
     </Empty>
   );
 

@@ -25,19 +25,30 @@ alter table public.orders
 -- Qazanc: hər sifariş üçün, mağazanın valyutasında (boş = hələ yazılmayıb).
 alter table public.orders add column if not exists profit numeric(10,2);
 
+-- Sifarişin sahibi (login olmuş istifadəçi). Yeni sifarişlərdə avtomatik doldurulur.
+alter table public.orders
+  add column if not exists user_id uuid default auth.uid() references auth.users (id);
+-- Sahibsiz köhnə sifarişlər ilk yaradılmış istifadəçiyə yazılır.
+update public.orders
+  set user_id = (select id from auth.users order by created_at limit 1)
+  where user_id is null;
+alter table public.orders alter column user_id set not null;
+create index if not exists orders_user_store_date_idx on public.orders (user_id, store, order_date desc, id desc);
+
 create index if not exists orders_order_date_idx on public.orders (order_date desc, id desc);
 create index if not exists orders_store_date_idx on public.orders (store, order_date desc, id desc);
 
--- Yalnız daxil olmuş (login) istifadəçi sifarişləri görə və dəyişə bilər.
+-- Hər istifadəçi yalnız ÖZ sifarişlərini görür və dəyişir (panellər bir-birinə qarışmır).
 alter table public.orders enable row level security;
 
 drop policy if exists "Signed-in users manage orders" on public.orders;
-create policy "Signed-in users manage orders"
+drop policy if exists "Users manage own orders" on public.orders;
+create policy "Users manage own orders"
   on public.orders
   for all
   to authenticated
-  using (true)
-  with check (true);
+  using (user_id = (select auth.uid()))
+  with check (user_id = (select auth.uid()));
 
 revoke all on public.orders from anon;
 grant select, insert, update, delete on public.orders to authenticated;
