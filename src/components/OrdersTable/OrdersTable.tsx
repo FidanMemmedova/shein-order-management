@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Popconfirm, Space, Table, Tooltip, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 import CargoSelect from "../CargoSelect/CargoSelect";
 import NotesCell from "../NotesEditor/NotesCell";
 import StatusCheckbox from "./StatusCheckbox";
@@ -85,7 +86,14 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
       key: "deliveryReceived",
       width: 88,
       align: "center",
-      render: (_, order) => <StatusCheckbox order={order} field="deliveryReceived" onPatch={onPatch} />,
+      render: (_, order) => (
+        <div className="cell-delivery">
+          <StatusCheckbox order={order} field="deliveryReceived" onPatch={onPatch} />
+          {order.deliveryReceived && order.deliveredAt && (
+            <span className="cell-delivery__date">{dayjs(order.deliveredAt).format("DD.MM")}</span>
+          )}
+        </div>
+      ),
     },
     {
       title: "Qaytarılma",

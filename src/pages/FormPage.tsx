@@ -48,6 +48,7 @@ const FormPage: React.FC<FormPageProps> = ({ store }) => {
         store,
         cargo: null,
         deliveryReceived: false,
+        deliveredAt: null,
         returnRequest: false,
         profit: null,
       });

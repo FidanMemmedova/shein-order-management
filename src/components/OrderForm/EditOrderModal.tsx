@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { App, Checkbox, Col, Form, InputNumber, Modal, Row } from "antd";
-import dayjs from "dayjs";
+import { App, Checkbox, Col, DatePicker, Form, InputNumber, Modal, Row } from "antd";
+import dayjs, { type Dayjs } from "dayjs";
 import { updateOrder } from "../../api/orders";
 import { STORE_CURRENCY, type Order, type Store } from "../../types/order";
 import CargoSelect from "../CargoSelect/CargoSelect";
@@ -16,7 +16,7 @@ interface EditOrderModalProps {
   onSaved: (order: Order) => void;
 }
 
-type EditValues = OrderFormValues & { store: Store; profit?: number | null };
+type EditValues = OrderFormValues & { store: Store; profit?: number | null; deliveredAt?: Dayjs | null };
 
 const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, onClose, onSaved }) => {
   const { message } = App.useApp();
@@ -24,6 +24,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, o
   const [saving, setSaving] = useState(false);
   // Qiymətin valyutası seçilmiş mağazaya görə dəyişir ($ / ₼).
   const selectedStore = Form.useWatch("store", form) ?? order?.store ?? "shein";
+  const delivered = Form.useWatch("deliveryReceived", form) ?? order?.deliveryReceived ?? false;
 
   const handleSave = async () => {
     if (!order) return;
@@ -41,6 +42,10 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, o
         store: values.store,
         cargo: values.cargo ?? null,
         deliveryReceived: Boolean(values.deliveryReceived),
+        // Təhvil alınıbsa və tarix yazılmayıbsa, bu günü götürürük (limit hesabı üçün).
+        deliveredAt: values.deliveryReceived
+          ? (values.deliveredAt ?? dayjs()).format("YYYY-MM-DD")
+          : null,
         returnRequest: Boolean(values.returnRequest),
         profit: values.profit ?? null,
       });
@@ -75,6 +80,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, o
           initialValues={{
             ...order,
             orderDate: dayjs(order.orderDate),
+            deliveredAt: order.deliveredAt ? dayjs(order.deliveredAt) : null,
             customerNotes: order.customerNotes.length ? order.customerNotes : [""],
           }}
         >
@@ -107,7 +113,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, o
                     />
                   </Form.Item>
                 </Col>
-                <Col xs={24}>
+                <Col xs={24} sm={delivered ? 12 : 24}>
                   <Form.Item label="Status">
                     <div className="status-checks">
                       <Form.Item name="deliveryReceived" valuePropName="checked" noStyle>
@@ -119,6 +125,17 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, o
                     </div>
                   </Form.Item>
                 </Col>
+                {delivered && (
+                  <Col xs={24} sm={12}>
+                    <Form.Item
+                      label="Təhvil tarixi"
+                      name="deliveredAt"
+                      tooltip="Aylıq $300 limiti bağlamanın təhvil alındığı aya sayılır."
+                    >
+                      <DatePicker format="DD.MM.YYYY" placeholder="Bu gün" style={{ width: "100%" }} />
+                    </Form.Item>
+                  </Col>
+                )}
               </Row>
             }
           />

@@ -12,7 +12,10 @@ export interface OrderFormValues {
   returnRequest?: boolean;
 }
 
-type OrderFields = Omit<OrderInput, "store" | "cargo" | "deliveryReceived" | "returnRequest" | "profit">;
+type OrderFields = Omit<
+  OrderInput,
+  "store" | "cargo" | "deliveryReceived" | "deliveredAt" | "returnRequest" | "profit"
+>;
 
 export const toOrderFields = (values: OrderFormValues): OrderFields => ({
   orderDate: values.orderDate.format("YYYY-MM-DD"),

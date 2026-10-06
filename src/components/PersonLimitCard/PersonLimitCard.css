@@ -153,6 +153,14 @@
   color: #18181b;
 }
 
+.limit-card__carried {
+  padding: 0 6px;
+  border-radius: 4px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 11px;
+}
+
 .limit-card__store,
 .limit-card__more {
   color: #a1a1aa;

@@ -25,7 +25,9 @@ interface LimitHintProps {
 const LimitHint: React.FC<LimitHintProps> = ({ orders, store, name, date, price, excludeOrderId }) => {
   if (!name?.trim()) return null;
 
-  const month = (date ?? dayjs()).startOf("month");
+  // Yeni bağlama hələ gəlməyib: keçmiş aya yazılsa belə, cari ayın limitinə düşür.
+  const orderMonth = (date ?? dayjs()).startOf("month");
+  const month = orderMonth.isBefore(dayjs(), "month") ? dayjs().startOf("month") : orderMonth;
   const usage = personUsage(
     orders.filter((order) => order.id !== excludeOrderId),
     name,

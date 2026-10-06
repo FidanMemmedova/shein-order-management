@@ -65,7 +65,12 @@ const OrderCards: React.FC<OrderCardsProps> = ({ orders, loading, emptyContent, 
               className="order-card__cargo"
               onChange={(cargo) => onPatch(order, { cargo: cargo ?? null }, "Kargo yadda saxlanıldı.")}
             />
-            <StatusCheckbox order={order} field="deliveryReceived" label="Təhvil" onPatch={onPatch} />
+            <StatusCheckbox
+              order={order}
+              field="deliveryReceived"
+              label={order.deliveryReceived && order.deliveredAt ? `Təhvil · ${formatDate(order.deliveredAt)}` : "Təhvil"}
+              onPatch={onPatch}
+            />
             <StatusCheckbox order={order} field="returnRequest" label="Qaytarılma" onPatch={onPatch} />
             <label className="order-card__profit">
               <span>Qazanc</span>

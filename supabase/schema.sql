@@ -25,6 +25,9 @@ alter table public.orders
 -- Qazanc: hər sifariş üçün, mağazanın valyutasında (boş = hələ yazılmayıb).
 alter table public.orders add column if not exists profit numeric(10,2);
 
+-- Təhvil tarixi: aylıq $300 limiti bağlamanın gəldiyi aya görə hesablanır.
+alter table public.orders add column if not exists delivered_at date;
+
 -- Sifarişin sahibi (login olmuş istifadəçi). Yeni sifarişlərdə avtomatik doldurulur.
 alter table public.orders
   add column if not exists user_id uuid default auth.uid() references auth.users (id);

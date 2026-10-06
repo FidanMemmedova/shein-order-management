@@ -1,4 +1,4 @@
-import type { Dayjs } from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
 import { normalizeText } from "./format";
 import type { Order } from "../types/order";
 
@@ -16,8 +16,10 @@ export interface PersonUsage {
   remainingUsd: number;
   percent: number;
   level: LimitLevel;
-  /** Seçilmiş ayın sifarişləri (yenidən köhnəyə). */
+  /** Seçilmiş aya sayılan sifarişlər (yenidən köhnəyə). */
   orders: Order[];
+  /** Əvvəlki aylardan keçən (hələ təhvil alınmamış) sifarişlərin id-ləri. */
+  carriedIds: Set<number>;
   sheinUsd: number;
   iherbAzn: number;
 }
@@ -45,15 +47,31 @@ export const LEVEL_COLORS: Record<LimitLevel, string> = {
   over: "#dc2626",
 };
 
-const inMonth = (order: Order, month: Dayjs) => order.orderDate.startsWith(month.format("YYYY-MM"));
+const monthOf = (date: string) => date.slice(0, 7);
+
+/**
+ * Bağlamanın limitə sayıldığı ay (YYYY-MM). Maksimum ehtiyat: limit heç vaxt aşılmasın.
+ * - təhvil alınıb → təhvil ayı (köhnə sifarişlərdə tarix yoxdursa, sifariş ayı);
+ * - hələ təhvil alınmayıb (qaytarılma işarəli olsa belə) → ayın 1-dək gəlmədiyi üçün cari aya keçir.
+ */
+export const limitMonth = (order: Order, today: Dayjs = dayjs()) => {
+  if (order.deliveryReceived) return monthOf(order.deliveredAt ?? order.orderDate);
+  const orderMonth = monthOf(order.orderDate);
+  const current = today.format("YYYY-MM");
+  return orderMonth < current ? current : orderMonth;
+};
+
+const inMonth = (order: Order, month: Dayjs) => limitMonth(order) === month.format("YYYY-MM");
 
 const summarize = (key: string, name: string, monthOrders: Order[]): PersonUsage => {
   const sheinUsd = monthOrders.filter((o) => o.store === "shein").reduce((sum, o) => sum + o.orderPrice, 0);
   const iherbAzn = monthOrders.filter((o) => o.store === "iherb").reduce((sum, o) => sum + o.orderPrice, 0);
   const usedUsd = sheinUsd + iherbAzn / AZN_PER_USD;
+  const month = monthOrders[0] ? limitMonth(monthOrders[0]) : "";
   return {
     key,
     name,
+    carriedIds: new Set(monthOrders.filter((o) => monthOf(o.orderDate) < month).map((o) => o.id)),
     usedUsd,
     remainingUsd: MONTHLY_LIMIT_USD - usedUsd,
     percent: (usedUsd / MONTHLY_LIMIT_USD) * 100,

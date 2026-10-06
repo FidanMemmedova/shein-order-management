@@ -34,6 +34,8 @@ export interface Order {
   orderForName: string;
   orderPrice: number;
   deliveryReceived: boolean;
+  /** Təhvil alındığı gün (YYYY-MM-DD); köhnə sifarişlərdə boş ola bilər. */
+  deliveredAt: string | null;
   returnRequest: boolean;
   cargo: Cargo | null;
   customerNotes: string[];

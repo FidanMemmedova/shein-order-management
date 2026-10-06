@@ -81,8 +81,8 @@ const LimitsPage: React.FC = () => {
         <div>
           <h1>Aylıq limitlər</h1>
           <p>
-            Bir şəxsin adına ayda ən çox ${MONTHLY_LIMIT_USD}-lıq bağlama göndərmək olar. Hesab sifariş tarixinə
-            görə aparılır və hər ayın 1-də sıfırlanır.
+            Bir şəxsin adına ayda ən çox ${MONTHLY_LIMIT_USD}-lıq bağlama göndərmək olar. Limit hər ayın 1-də
+            sıfırlanır.
           </p>
         </div>
         <DatePicker
@@ -155,7 +155,8 @@ const LimitsPage: React.FC = () => {
           type="info"
           showIcon
           className="limits-note"
-          message={`Shein və iHerb sifarişləri birlikdə sayılır; iHerb məbləğləri 1 $ = ${AZN_PER_USD.toFixed(2)} ₼ ilə dollara çevrilir.`}
+          message="Bağlama təhvil alındığı aya sayılır. Ayın 1-dək təhvil alınmayan bağlama növbəti ayın limitinə keçir."
+          description={`Shein və iHerb sifarişləri birlikdə sayılır; iHerb məbləğləri 1 $ = ${AZN_PER_USD.toFixed(2)} ₼ ilə dollara çevrilir. Təhvil tarixi «Təhvil alındı» işarələnəndə avtomatik yazılır.`}
         />
 
         {loading ? (

@@ -1,5 +1,6 @@
 import React from "react";
 import { Checkbox, Popconfirm } from "antd";
+import dayjs from "dayjs";
 import type { Order, OrderInput } from "../../types/order";
 
 export type StatusField = "deliveryReceived" | "returnRequest";
@@ -26,7 +27,16 @@ const StatusCheckbox: React.FC<StatusCheckboxProps> = ({ order, field, label, on
       title={checked ? askUncheck : askCheck}
       okText="Bəli"
       cancelText="Xeyr"
-      onConfirm={() => onPatch(order, { [field]: !checked }, "Status yeniləndi.")}
+      onConfirm={() =>
+        onPatch(
+          order,
+          field === "deliveryReceived"
+            ? // Təhvil tarixi limitin hansı aya sayılacağını müəyyən edir.
+              { deliveryReceived: !checked, deliveredAt: checked ? null : dayjs().format("YYYY-MM-DD") }
+            : { returnRequest: !checked },
+          "Status yeniləndi."
+        )
+      }
     >
       {/* Popconfirm klik hadisəsini Checkbox-dan birbaşa tutmur, ona görə span-a bükürük. */}
       <span className="status-checkbox">

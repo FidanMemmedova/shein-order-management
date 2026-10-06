@@ -103,6 +103,11 @@ const PersonLimitCard: React.FC<PersonLimitCardProps> = ({ usage, compact = fals
             <li key={order.id}>
               <span>{formatDate(order.orderDate)}</span>
               <span className="limit-card__store">{STORE_LABELS[order.store]}</span>
+              {usage.carriedIds.has(order.id) && (
+                <span className="limit-card__carried" title="Keçən ay təhvil alınmadığı üçün bu aya keçib">
+                  keçən aydan
+                </span>
+              )}
               <strong>{formatMoney(order.orderPrice, order.store)}</strong>
             </li>
           ))}

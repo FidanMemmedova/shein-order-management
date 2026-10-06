@@ -9,6 +9,7 @@ interface OrderRow {
   order_for_name: string;
   order_price: number | string;
   delivery_received: boolean;
+  delivered_at: string | null;
   return_request: boolean;
   cargo: Cargo | null;
   customer_notes: string[] | null;
@@ -16,7 +17,7 @@ interface OrderRow {
 }
 
 const COLUMNS =
-  "id, store, order_date, order_email, order_for_name, order_price, delivery_received, return_request, cargo, customer_notes, profit";
+  "id, store, order_date, order_email, order_for_name, order_price, delivery_received, delivered_at, return_request, cargo, customer_notes, profit";
 
 // Supabase bir sorğuda ən çox 1000 sətir qaytarır, ona görə hissə-hissə oxuyuruq.
 const PAGE_SIZE = 1000;
@@ -29,6 +30,7 @@ const fromRow = (row: OrderRow): Order => ({
   orderForName: row.order_for_name,
   orderPrice: Number(row.order_price),
   deliveryReceived: row.delivery_received,
+  deliveredAt: row.delivered_at,
   returnRequest: row.return_request,
   cargo: row.cargo,
   customerNotes: row.customer_notes ?? [],
@@ -43,6 +45,7 @@ export const toRow = (order: Partial<OrderInput>) => {
   if (order.orderForName !== undefined) row.order_for_name = order.orderForName.trim();
   if (order.orderPrice !== undefined) row.order_price = order.orderPrice;
   if (order.deliveryReceived !== undefined) row.delivery_received = order.deliveryReceived;
+  if (order.deliveredAt !== undefined) row.delivered_at = order.deliveredAt;
   if (order.returnRequest !== undefined) row.return_request = order.returnRequest;
   if (order.cargo !== undefined) row.cargo = order.cargo;
   if (order.customerNotes !== undefined) row.customer_notes = cleanNotes(order.customerNotes);
