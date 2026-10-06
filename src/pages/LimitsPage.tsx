@@ -166,7 +166,7 @@ const LimitsPage: React.FC = () => {
         ) : visible.length ? (
           <div className="limits-grid">
             {visible.map((person) => (
-              <PersonLimitCard key={person.key} usage={person} compact={isPhone} />
+              <PersonLimitCard key={person.key} usage={person} month={month} compact={isPhone} />
             ))}
           </div>
         ) : (

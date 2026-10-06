@@ -26,7 +26,7 @@
   }
 }
 
-.orders-card .ant-card-body {
+.orders-card > .ant-card-body {
   padding: 0;
 }
 

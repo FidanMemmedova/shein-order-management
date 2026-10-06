@@ -1,0 +1,22 @@
+.limit-ring {
+  position: relative;
+  flex: none;
+}
+
+.limit-ring svg {
+  display: block;
+}
+
+.limit-ring__value {
+  transition: stroke-dasharray 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.limit-ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
