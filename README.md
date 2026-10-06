@@ -1,5 +1,7 @@
 # Fidan Business Management
 
+Canlı sayt: **https://fidan-business-management.vercel.app** (köhnə `shein-order-management.vercel.app` ünvanı avtomatik bura yönləndirir).
+
 **Shein** və **iHerb** sifarişlərini bir yerdə izləmək və idarə etmək üçün panel: Vite, React, TypeScript, Ant Design. Məlumatlar **Supabase** (PostgreSQL) bazasında saxlanılır, sifariş sayına limit yoxdur.
 
 ## Əsas xüsusiyyətlər

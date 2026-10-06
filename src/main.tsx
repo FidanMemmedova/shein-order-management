@@ -10,29 +10,40 @@ import App from "./App.tsx";
 
 dayjs.locale("az");
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ConfigProvider
-      locale={azAZ}
-      theme={{
-        token: {
-          colorPrimary: "#18181b",
-          colorLink: "#18181b",
-          colorTextBase: "#18181b",
-          borderRadius: 8,
-          fontFamily:
-            '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
-        },
-        components: {
-          Layout: { headerBg: "transparent", bodyBg: "transparent" },
-          Menu: { itemBg: "transparent", horizontalItemSelectedColor: "#18181b" },
-          Table: { headerBg: "#fafafa", rowHoverBg: "#fafafa" },
-        },
-      }}
-    >
-      <AntApp>
-        <App />
-      </AntApp>
-    </ConfigProvider>
-  </StrictMode>
-);
+// Köhnə ünvan başqa Vercel hesabında qalıb, amma eyni repodan yığılır: ziyarətçini yeni sayta göndəririk.
+const OLD_HOST = "shein-order-management.vercel.app";
+const NEW_ORIGIN = "https://fidan-business-management.vercel.app";
+
+const renderApp = () =>
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <ConfigProvider
+        locale={azAZ}
+        theme={{
+          token: {
+            colorPrimary: "#18181b",
+            colorLink: "#18181b",
+            colorTextBase: "#18181b",
+            borderRadius: 8,
+            fontFamily:
+              '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+          },
+          components: {
+            Layout: { headerBg: "transparent", bodyBg: "transparent" },
+            Menu: { itemBg: "transparent", horizontalItemSelectedColor: "#18181b" },
+            Table: { headerBg: "#fafafa", rowHoverBg: "#fafafa" },
+          },
+        }}
+      >
+        <AntApp>
+          <App />
+        </AntApp>
+      </ConfigProvider>
+    </StrictMode>
+  );
+
+if (window.location.hostname === OLD_HOST) {
+  window.location.replace(NEW_ORIGIN + window.location.pathname + window.location.search);
+} else {
+  renderApp();
+}
