@@ -77,6 +77,10 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, o
           form={form}
           layout="vertical"
           requiredMark={false}
+          onValuesChange={(changed: Partial<EditValues>) => {
+            // Təhvil ləğv olunursa, qaytarılma da ləğv olunur.
+            if (changed.deliveryReceived === false) form.setFieldValue("returnRequest", false);
+          }}
           initialValues={{
             ...order,
             orderDate: dayjs(order.orderDate),
@@ -120,7 +124,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ order, emails, names, o
                         <Checkbox>Təhvil alındı</Checkbox>
                       </Form.Item>
                       <Form.Item name="returnRequest" valuePropName="checked" noStyle>
-                        <Checkbox>Qaytarılma</Checkbox>
+                        <Checkbox disabled={!delivered}>Qaytarılma</Checkbox>
                       </Form.Item>
                     </div>
                   </Form.Item>

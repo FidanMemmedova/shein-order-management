@@ -28,6 +28,11 @@ alter table public.orders add column if not exists profit numeric(10,2);
 -- Təhvil tarixi: aylıq $300 limiti bağlamanın gəldiyi aya görə hesablanır.
 alter table public.orders add column if not exists delivered_at date;
 
+-- Qaytarılma yalnız təhvil alınmış sifarişdə ola bilər.
+alter table public.orders drop constraint if exists orders_return_requires_delivery;
+alter table public.orders add constraint orders_return_requires_delivery
+  check (not return_request or delivery_received);
+
 -- Sifarişin sahibi (login olmuş istifadəçi). Yeni sifarişlərdə avtomatik doldurulur.
 alter table public.orders
   add column if not exists user_id uuid default auth.uid() references auth.users (id);
