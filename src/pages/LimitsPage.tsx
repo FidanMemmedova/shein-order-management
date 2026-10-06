@@ -28,7 +28,7 @@ const LimitsPage: React.FC = () => {
   const [month, setMonth] = useState(() => dayjs().startOf("month"));
   const [search, setSearch] = useState("");
   const [scope, setScope] = useState<Scope>("all");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("free");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("full");
 
   const loadOrders = useCallback(async () => {
     setLoading(true);
@@ -55,8 +55,10 @@ const LimitsPage: React.FC = () => {
     const filtered = usage.filter(
       (person) => (scope === "all" || person.usedUsd > 0) && (!query || person.key.includes(query))
     );
-    // usage ən boşdan ən doluya sıralanıb.
-    return sortOrder === "free" ? filtered : [...filtered].reverse();
+    // usage ən boşdan ən doluya sıralanıb; "full" üçün ən dolu əvvəldə, bərabər olanlar əlifba ilə.
+    return sortOrder === "free"
+      ? filtered
+      : [...filtered].sort((a, b) => b.usedUsd - a.usedUsd || a.name.localeCompare(b.name, "az"));
   }, [usage, scope, search, sortOrder]);
 
   if (loadFailed) {
@@ -143,8 +145,8 @@ const LimitsPage: React.FC = () => {
               value={sortOrder}
               onChange={setSortOrder}
               options={[
+                { value: "full", label: "Limiti dolu olanlar əvvəldə" },
                 { value: "free", label: "Ən çox boş yer əvvəldə" },
-                { value: "full", label: "Ən dolu əvvəldə" },
               ]}
               className="limits-toolbar__sort"
             />
